@@ -1,0 +1,13 @@
+FROM centos:6
+RUN yum -y install initscripts rsyslog gcc
+RUN rpm -i --nodeps http://cdn.rpm.repo.onapp.com/repo/centos/6/x86_64/RPMS-5.5/rubygem-thrift-0.9.2.0-234.el6.onapp.1.x86_64.rpm \
+    http://cdn.rpm.repo.onapp.com/repo/centos/6/x86_64/RPMS-5.5/rubygem-net-scp-1.0.4-234.el6.onapp.1.noarch.rpm
+RUN rpm -Uvh http://rpm.repo.onapp.com/repo/onapp-repo-6.0.noarch.rpm \
+    && yum install onapp-cp-install -y \
+    && /onapp/onapp-cp-install/onapp-cp-install.sh -a --accept-eula --noservices \
+    && yum -y clean all
+RUN rpm -e --nodeps rubygem-file-tail-1.1.0-234.el6.onapp.1.noarch \
+    && rpm -i --nodeps http://cdn.rpm.repo.onapp.com/repo/centos/6/x86_64/RPMS-5.5/rubygem-file-tail-1.1.0-234.el6.onapp.1.noarch.rpm
+RUN echo "PassengerStartTimeout 600" >> /etc/httpd/conf.d/onapp.conf
+CMD "/bin/bash"
+
